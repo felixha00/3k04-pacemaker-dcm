@@ -1,6 +1,6 @@
 import { resolve } from 'path';
 import openSocket from 'socket.io-client';
-const socket = openSocket('http://localhost:5000');
+const socket = openSocket();
 
 export const subscribeToTimer = (cb) => {
   socket.on('timer', timestamp => cb(null, timestamp));
