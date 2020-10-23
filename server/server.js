@@ -4,21 +4,30 @@ const cors = require('cors');
 const http = require('http');
 const path = require('path');
 //const socketIo = require('socket.io')();
-
+const apiPort = process.env.PORT || 5000;
+const buildPath = path.join(__dirname, '.././build');
 var app = express()
-var server = require('http').createServer(app)
-var io = require('socket.io')(server)
+.use(cors())
+.use(express.static(path.join(buildPath)))
+.use((req, res) => res.sendFile(path.join(buildPath, '/index.html')))
+.listen(apiPort, () => {
+  console.log(`Server running on port ${apiPort}`);
+});
+//var server = require('http').createServer(app)
+//var io = require('socket.io')(server)
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors());
-app.use(bodyParser.json());
+var io = require('socket.io')(app);
+
+/////app.use(bodyParser.urlencoded({ extended: true }));
+//app.use(cors());
+//app.use(bodyParser.json());
 const sp = require('serialport');
 const rl = require('@serialport/parser-readline');
 const rd = require('@serialport/parser-ready');
 
-const apiPort = process.env.PORT || 5000;
 
-const buildPath = path.join(__dirname, '.././build');
+
+
 const parser = new rl();
 var port;
 //server = require('http').createServer(app);
@@ -43,9 +52,14 @@ var getPortsList = callback => {
   });
 };
 
-server.listen(apiPort, () => {
+/*
+app.listen(apiPort, () => {
   console.log(`Server running on port ${apiPort}`);
 });
+*/
+
+
+
 
 io.on('connection', client => {
   client.on('disconnect', () => console.log('Client disconnected'));
@@ -95,7 +109,9 @@ io.on('connection', client => {
   });
 });
 
+/*
 app.use(express.static(path.join(buildPath)));
 app.get('*', (req, res) => {
   res.sendFile(path.join(buildPath, '/index.html'));
 });
+*/

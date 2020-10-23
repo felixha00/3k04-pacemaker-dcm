@@ -1,8 +1,8 @@
 import { resolve } from 'path';
 import openSocket from 'socket.io-client';
-//const socket = openSocket(process.env.NODE_ENV === 'development' ? ('http://localhost:5000/'):('/'));
+const socket = openSocket(process.env.NODE_ENV === 'development' ? ('http://localhost:5000/'):('/'));
 
-const socket = openSocket()
+//const socket = openSocket()
 
 export const subscribeToTimer = (cb) => {
   socket.on('timer', timestamp => cb(null, timestamp));
