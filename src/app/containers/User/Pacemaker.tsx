@@ -12,6 +12,7 @@ const PacemakerStatus = props => {
   return (
     <>
       <Box p={3} border={"1px solid black" }rounded="md">
+        {console.log(props)}
         <Heading
         fontSize="xl"
           w="fit-content"
@@ -19,9 +20,12 @@ const PacemakerStatus = props => {
         >
           Pacemaker Status
         </Heading>
-        <Stack mt={1} fontSize="sm">
-            
-          <Text>Connected: {props.pacemaker.connected ? '✔' : '❌'}</Text>
+        <Stack mt={3} fontSize="sm">
+            <Box>
+            <Text fontWeight="bold">Connected: {props.result ? '✔️' : '❌'}</Text>
+            <Text color="purple.700" fontSize="xs">{props.msg}</Text>
+            </Box>
+         
         </Stack>
       </Box>
     </>
@@ -36,6 +40,8 @@ class Pacemaker extends Component<Props, State> {
   state = {
     port: '',
     availablePorts: [],
+    result: false,
+    msg: ''
   };
 
   handleCOMChange = (e) => {
@@ -47,7 +53,11 @@ class Pacemaker extends Component<Props, State> {
   }
 
   handleCOMConnect = () => {
-    connectCOMPort(null, this.state.port)
+    connectCOMPort((res, msg) => {
+       
+            this.setState({msg: msg, result: res})
+        
+    }, this.state.port)
   }
 
 
@@ -58,8 +68,7 @@ class Pacemaker extends Component<Props, State> {
   render() {
     return (
       <Stack>
-          {console.log(this.state)}
-        <PacemakerStatus {...this.props}/>
+        <PacemakerStatus {...this.props} {...this.state}/>
 
         <Box d="inline-flex">
           <Button

@@ -22,6 +22,7 @@ const apiPort = process.env.PORT || 5000;
 
 const buildPath = path.join(__dirname, '.././build');
 const parser = new rl();
+var port;
 //server = require('http').createServer(app);
 
 /*
@@ -74,8 +75,23 @@ io.on('connection', client => {
   });
   /////////////////////////
 
-  client.on('connectToCOMPort', port => {
-    console.log(`client trying to connect to ${port}`);
+  client.on('connectToCOMPort', COMPort => {
+    console.log(`client trying to connect to ${COMPort}`);
+       
+       port = new sp(COMPort, {
+        autoOpen: true,
+        baudRate: 9600,
+      }, (err => {
+        console.log(err)
+        if (err) {
+          io.emit('connectCOMError', `${err}`)
+        }
+        else {
+          io.emit('connectCOMSuccess', `Successfully connected to ${COMPort}`)
+        }
+      }))
+      
+      
   });
 });
 
