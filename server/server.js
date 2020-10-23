@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const http = require('http');
+const path = require('path');
 //const socketIo = require('socket.io')();
 
 var app = express()
@@ -9,7 +10,7 @@ var server = require('http').createServer(app)
 var io = require('socket.io')(server)
 
 
-const path = require('path');
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use(bodyParser.json());
