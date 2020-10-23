@@ -7,6 +7,7 @@ import { createInjectorsEnhancer, forceReducerReload } from 'redux-injectors';
 import createSagaMiddleware from 'redux-saga';
 
 import { createReducer } from './reducers';
+import pacemakerReducer from './reducers/pacemakerReducer';
 
 export function configureAppStore() {
   const reduxSagaMonitorOptions = {};
@@ -24,7 +25,7 @@ export function configureAppStore() {
   ];
 
   const store = configureStore({
-    reducer: createReducer(),
+    reducer: createReducer({pacemaker: pacemakerReducer}),
     middleware: [...getDefaultMiddleware(), ...middlewares],
     devTools: process.env.NODE_ENV !== 'production',
     enhancers,

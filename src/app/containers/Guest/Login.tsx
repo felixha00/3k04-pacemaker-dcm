@@ -9,7 +9,8 @@ import {
     FormErrorMessage,
     FormControl,
     Text,
-    Heading
+    Heading,
+    Link
   } from "@chakra-ui/core";
   import React, { Component } from "react";
   
@@ -87,7 +88,9 @@ import {
               <Button mt={6} colorScheme="purple" type="submit">
                 Login
               </Button>
+             
             </form>
+            <Link href="/new-user">Create new user</Link>
           </Stack>
         </Center>
       );

@@ -9,17 +9,14 @@ export const customTheme = extendTheme({
     },
     
     colors: {
-       /* 
-      box: {
-  
-      },
+      
   
       brand: {
         bg: '#232323',
         primary: '',
         secondary: '',
       }
-      */
+      
     },
     fonts: {
       heading: 'Manrope',

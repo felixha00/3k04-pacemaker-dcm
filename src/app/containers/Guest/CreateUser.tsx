@@ -9,7 +9,9 @@ import {
   FormErrorMessage,
   FormControl,
   Text,
-  Heading
+  Heading,
+  Link,
+  Code
 } from "@chakra-ui/core";
 import React, { Component } from "react";
 
@@ -30,6 +32,10 @@ export class CreateUser extends Component<Props> {
   }
 
   render() {
+    let registeredUsers: Array<Object> = JSON.parse(
+      localStorage.getItem("pacemaker-users") || "[]"
+    );
+
     return (
       <Center h="100vh">
         <Stack>
@@ -87,6 +93,12 @@ export class CreateUser extends Component<Props> {
               Register
             </Button>
           </form>
+          <Link href="/login">Login instead</Link>
+              
+          {
+            <Code p={3} colorScheme="purple">{
+              localStorage.getItem("pacemaker-users")}</Code>
+          }
         </Stack>
       </Center>
     );
