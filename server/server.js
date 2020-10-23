@@ -9,8 +9,6 @@ var app = express()
 var server = require('http').createServer(app)
 var io = require('socket.io')(server)
 
-
-
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use(bodyParser.json());
@@ -50,6 +48,8 @@ server.listen(apiPort, () => {
 });
 
 io.on('connection', client => {
+  client.on('disconnect', () => console.log('Client disconnected'));
+
   client.on('subscribeToTimer', interval => {
     console.log('client is subscribing to timer with interval ', interval);
     setInterval(() => {
