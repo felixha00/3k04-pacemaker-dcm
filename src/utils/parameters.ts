@@ -1,28 +1,37 @@
 
+// export const parameterOpts = {
+//   mode: [
+//     'OFF',
+//     'DDD',
+//     'VDD',
+//     'DDI',
+//     'DOO',
+//     'AOO',
+//     'AAI',
+//     'VOO',
+//     'VVI',
+//     'AAT',
+//     'VVT',
+//     'DDDR',
+//     'VDDR',
+//     'DDIR',
+//     'DOOR',
+//     'AOOR',
+//     'AAIR',
+//     'VOOR',
+//     'VVIR',
+//   ],
+// }
 export const parameterOpts = {
   mode: [
     'OFF',
-    'DDD',
-    'VDD',
-    'DDI',
-    'DOO',
     'AOO',
-    'AAI',
     'VOO',
+    'AAI',
     'VVI',
-    'AAT',
-    'VVT',
-    'DDDR',
-    'VDDR',
-    'DDIR',
-    'DOOR',
-    'AOOR',
-    'AAIR',
-    'VOOR',
-    'VVIR',
+
   ],
 }
-
 /*
 export const parameterOpts = {
   mode: {
