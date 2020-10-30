@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const http = require('http');
 const path = require('path');
+const usb = require("webusb").usb;
 //const socketIo = require('socket.io')();
 const apiPort = process.env.PORT || 5000;
 const buildPath = path.join(__dirname, '.././build');
@@ -75,7 +76,7 @@ io.on('connection', client => {
   client.on('requestCOMPorts', async () => {
     console.log('client requesting COM ports');
     let COMPorts = [];
-
+    
     sp.list()
       .then(ports => {
         ports.forEach(function (port) {

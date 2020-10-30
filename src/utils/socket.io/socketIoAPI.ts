@@ -1,6 +1,6 @@
 import { resolve } from 'path';
 import openSocket from 'socket.io-client';
-const socket = openSocket(process.env.NODE_ENV === 'development' ? ('http://localhost:5000/'):('/'));
+const socket = openSocket(process.env.NODE_ENV === 'development' ? ('http://localhost:5000/'):('http://localhost:5000/'));
 
 //const socket = openSocket()
 

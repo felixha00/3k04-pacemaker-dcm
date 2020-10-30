@@ -42,6 +42,8 @@ export class CreateUser extends Component<Props> {
         <Heading mb={6}>Register</Heading>
           <form
             id="login"
+
+
             onSubmit={(e) => {
               try {
                 e.preventDefault();
@@ -49,7 +51,7 @@ export class CreateUser extends Component<Props> {
                   localStorage.getItem("pacemaker-users") || "[]"
                 );
 
-                if (users.length < 11) {
+                if (users.length < 10) {
                   users.push({
                     username: this.state.username,
                     password: this.state.password,
@@ -59,12 +61,15 @@ export class CreateUser extends Component<Props> {
                     JSON.stringify(users)
                   );
                   this.state.error = "";
-                  this.props.history.push('/login')
+                 
+                  //this.props.history.push('/login')
                 } else {
                   this.setState({ error: "Max 10 Users" });
                 }
               } catch (error) {}
             }}
+
+
           >
             <Box>
               <FormLabel>Username</FormLabel>
