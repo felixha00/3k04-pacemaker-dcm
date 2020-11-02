@@ -31,6 +31,33 @@ export class CreateUser extends Component<Props> {
     this.setState({ [target.name]: event.target.value });
   }
 
+  createUser = (e, username, pass) => {
+   
+      try {
+        e.preventDefault();
+        let users: Array<Object> = JSON.parse(
+          localStorage.getItem("pacemaker-users") || "[]"
+        );
+
+        if (users.length < 10) {
+          users.push({
+            username: username,
+            password: pass,
+          });
+          localStorage.setItem(
+            "pacemaker-users",
+            JSON.stringify(users)
+          );
+          this.state.error = "";
+         
+          //this.props.history.push('/login')
+        } else {
+          this.setState({ error: "Max 10 Users" });
+        }
+      } catch (error) {}
+    
+  }
+
   render() {
     let registeredUsers: Array<Object> = JSON.parse(
       localStorage.getItem("pacemaker-users") || "[]"
@@ -44,30 +71,7 @@ export class CreateUser extends Component<Props> {
             id="login"
 
 
-            onSubmit={(e) => {
-              try {
-                e.preventDefault();
-                let users: Array<Object> = JSON.parse(
-                  localStorage.getItem("pacemaker-users") || "[]"
-                );
-
-                if (users.length < 10) {
-                  users.push({
-                    username: this.state.username,
-                    password: this.state.password,
-                  });
-                  localStorage.setItem(
-                    "pacemaker-users",
-                    JSON.stringify(users)
-                  );
-                  this.state.error = "";
-                 
-                  //this.props.history.push('/login')
-                } else {
-                  this.setState({ error: "Max 10 Users" });
-                }
-              } catch (error) {}
-            }}
+            onSubmit={(e) => this.createUser(e, this.state.username, this.state.password)}
 
 
           >
@@ -83,7 +87,7 @@ export class CreateUser extends Component<Props> {
             </Box>
             <Box>
               <FormLabel>Password</FormLabel>
-
+          
               <Input
                 name="password"
                 variant="filled"

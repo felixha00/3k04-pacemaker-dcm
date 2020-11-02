@@ -22,7 +22,7 @@ const PacemakerStatus = props => {
         </Heading>
         <Stack mt={3} fontSize="sm">
             <Box>
-            <Text fontWeight="bold">Connected: {props.result ? '✔️' : '❌'}</Text>
+            <Text fontWeight="bold">Connected: {props.connected ? '✔️' : '❌'}</Text>
             <Text color="purple.700" fontSize="xs">{props.msg}</Text>
             </Box>
          
@@ -40,7 +40,7 @@ class Pacemaker extends Component<Props, State> {
   state = {
     port: '',
     availablePorts: [],
-    result: false,
+    connected: false,
     msg: ''
   };
 
@@ -55,7 +55,7 @@ class Pacemaker extends Component<Props, State> {
   handleCOMConnect = () => {
     connectCOMPort((res, msg) => {
        
-            this.setState({msg: msg, result: res})
+            this.setState({msg: msg, connected: res})
         
     }, this.state.port)
   }

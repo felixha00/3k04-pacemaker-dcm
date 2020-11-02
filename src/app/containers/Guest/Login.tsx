@@ -29,7 +29,36 @@ import {
       let target = event.target;
       this.setState({ [target.name]: event.target.value });
     }
-  
+
+    login = (e,username,pass) => {
+    
+        try {
+          e.preventDefault();
+         
+          let users: Array<any> = JSON.parse(
+            localStorage.getItem("pacemaker-users") || "[]"
+          );
+          
+          let user = users.find(user => user.username === username)
+          
+          if (user){
+            if (user.password === pass) {
+                localStorage.setItem("user", JSON.stringify(user))
+                
+                
+                this.props.history.push('/dashboard')
+            } else {
+               this.setState({ error: "Incorrect Password" });
+            }
+
+
+          } 
+          else this.setState({ error: "Account not found" });
+         
+        } catch (error) {}
+      
+    }
+
     render() {
       return (
         <Center h="100vh">
@@ -37,30 +66,7 @@ import {
           <Heading mb={6}>Login</Heading>
             <form
               id="login"
-              onSubmit={(e) => {
-                try {
-                  e.preventDefault();
-                 
-                  let users: Array<any> = JSON.parse(
-                    localStorage.getItem("pacemaker-users") || "[]"
-                  );
-                  
-                  let user = users.find(user => user.username === this.state.username)
-                  
-                  if (user){
-                    if (user.password === this.state.password) {
-                        localStorage.setItem("user", JSON.stringify(user))
-                        this.props.history.push('/dashboard')
-                    } else {
-                       this.setState({ error: "Incorrect Password" });
-                    }
-
-
-                  } 
-                  else this.setState({ error: "Account not found" });
-                 
-                } catch (error) {}
-              }}
+              onSubmit={(e) => this.login(e,this.state.username, this.state.password)}
             >
               <Box>
                 <FormLabel>Username</FormLabel>
