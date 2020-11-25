@@ -8,7 +8,6 @@ import {
   SimpleGrid,
   Button,
 } from '@chakra-ui/core';
-import React from 'react';
 import { inputParamOpts, parameterOpts } from 'utils/parameters';
 import {
   NumberInput,
@@ -18,35 +17,47 @@ import {
   NumberDecrementStepper,
 } from '@chakra-ui/core';
 
-interface Props {}
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 
-const Parameters = (props: Props) => {
-  return (
-    <>
+interface Props {
+  
+}
+interface State {
+  
+}
+
+export class Parameters extends Component<Props, State> {
+  state = {}
+
+  render() {
+    return (
+      <>
       <Heading fontSize="xl">Current Parameters</Heading>
       <Stack mt={6} spacing={6}>
         <form>
-          {Object.keys(parameterOpts).map(key => {
-            return (
-              <>
-                <Box>
-                  <Text
-                    textTransform="uppercase"
-                    fontSize="sm"
-                    fontWeight="bold"
-                  >
-                    {key}
-                  </Text>
-                  <Select variant="filled">
-                    {parameterOpts[key].map(option => (
-                      <option value={option}>{option}</option>
-                    ))}
-                  </Select>
-                </Box>
-              </>
-            );
-          })}
           <SimpleGrid mt={3} columns={[1, 2, 2, 4, 5]} spacing={3}>
+            {Object.keys(parameterOpts).map(key => {
+              return (
+                <>
+                  <Box>
+                    <Text
+                      textTransform="uppercase"
+                      fontSize="sm"
+                      fontWeight="bold"
+                    >
+                      {key}
+                    </Text>
+                    <Select variant="filled">
+                      {parameterOpts[key].map(option => (
+                        <option value={option}>{option}</option>
+                      ))}
+                    </Select>
+                  </Box>
+                </>
+              );
+            })}
+
             {Object.keys(inputParamOpts).map(key => {
               let input = inputParamOpts[key];
               return (
@@ -84,7 +95,18 @@ const Parameters = (props: Props) => {
         </form>
       </Stack>
     </>
-  );
-};
+    )
+  }
+}
 
-export default Parameters;
+const mapStateToProps = (state) => ({
+  
+})
+
+const mapDispatchToProps = {
+  
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Parameters)
+
+

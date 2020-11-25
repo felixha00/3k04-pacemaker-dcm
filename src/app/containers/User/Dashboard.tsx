@@ -1,4 +1,4 @@
-import { Divider, Flex, Heading, IconButton, Stack, Text } from "@chakra-ui/core";
+import { Divider, Flex, Heading, IconButton, Stack, Text, Button } from "@chakra-ui/core";
 import React, { Component } from "react";
 
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/core";
@@ -7,7 +7,9 @@ import Pacemaker from "./Pacemaker";
 import { subscribeToTimer } from "utils/socket.io/socketIoAPI";
 
 
-interface Props {}
+interface Props {
+  history: any
+}
 interface State {}
 
 class Dashboard extends Component<Props, State> {
@@ -58,6 +60,7 @@ class Dashboard extends Component<Props, State> {
           
         </Stack>
         <Flex flexGrow={1}/>
+        <Button colorScheme="purple" fontSize="sm" onClick={() => this.props.history.push('/')}>Log Out</Button>
         <IconButton aria-label="menu" icon={<Text>⚙️</Text>}></IconButton>
         </Stack>
         <Tabs mt={3} variant="enclosed-colored" colorScheme="purple">

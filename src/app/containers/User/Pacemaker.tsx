@@ -1,8 +1,13 @@
-import { Stack, Box, Text, Select, Button, Heading } from '@chakra-ui/core';
+import { Stack, Box, Text, Select, Button, Heading, Divider } from '@chakra-ui/core';
 import React, { Component } from 'react';
 import { connectCOMPort, getCOMPorts } from 'utils/socket.io/socketIoAPI';
 import { connect } from 'react-redux';
-
+import { Atrium } from './Graphs/Atrium';
+import { defaults } from 'react-chartjs-2';
+import { Ventricle } from './Graphs/Ventricle';
+ 
+// Disable animating charts by default.
+defaults.global.defaultFontFamily = 'Inter';
 interface Props {
   pacemaker: any;
 }
@@ -11,23 +16,23 @@ interface State {}
 const PacemakerStatus = props => {
   return (
     <>
-      <Box p={3} border={"1px solid black" }rounded="md">
+      <Box bg="purple.500" w="fit-content" p={6} color="white" rounded="md">
+
         {console.log(props)}
-        <Heading
-        fontSize="xl"
-          w="fit-content"
-        
-        >
+        <Heading fontSize="xl" w="fit-content">
           Pacemaker Status
         </Heading>
         <Stack mt={3} fontSize="sm">
-            <Box>
-            <Text fontWeight="bold">Connected: {props.connected ? '✔️' : '❌'}</Text>
-            <Text color="purple.700" fontSize="xs">{props.msg}</Text>
-            </Box>
-         
+          <Box>
+            <Text>
+              Connected: {props.connected ? '✔️' : '❌'}
+            </Text>
+            <Text color="purple.100" fontSize="xs">
+              {props.msg}
+            </Text>
+          </Box>
         </Stack>
-      </Box>
+        </Box>
     </>
   );
 };
@@ -41,25 +46,22 @@ class Pacemaker extends Component<Props, State> {
     port: '',
     availablePorts: [],
     connected: false,
-    msg: ''
+    msg: '',
   };
 
-  handleCOMChange = (e) => {
+  handleCOMChange = e => {
     var index = e.nativeEvent.target.selectedIndex;
     if (index === 0) {
-        return this.setState({port: ''})
+      return this.setState({ port: '' });
     }
-    this.setState({port:e.nativeEvent.target[index].text})
-  }
+    this.setState({ port: e.nativeEvent.target[index].text });
+  };
 
   handleCOMConnect = () => {
     connectCOMPort((res, msg) => {
-       
-            this.setState({msg: msg, connected: res})
-        
-    }, this.state.port)
-  }
-
+      this.setState({ msg: msg, connected: res });
+    }, this.state.port);
+  };
 
   componentDidMount = () => {
     getCOMPorts(ports => this.setState({ availablePorts: ports }));
@@ -67,9 +69,10 @@ class Pacemaker extends Component<Props, State> {
 
   render() {
     return (
-      <Stack>
-        <PacemakerStatus {...this.props} {...this.state}/>
-
+      <>
+      <Stack spacing={6}>
+        <PacemakerStatus {...this.props} {...this.state} />
+     
         <Box d="inline-flex">
           <Button
             mr={3}
@@ -81,18 +84,31 @@ class Pacemaker extends Component<Props, State> {
           >
             🔄
           </Button>
-          <Select variant="filled" placeholder="Select COM Port" onChange={(e) => (
-              this.handleCOMChange(e)
-          )}>
+          <Select
+            variant="filled"
+            placeholder="Select COM Port"
+            onChange={e => this.handleCOMChange(e)}
+          >
             {this.state.availablePorts.map(port => (
               <option value={port}>{port}</option>
             ))}
           </Select>
-        <Button onClick={() => this.handleCOMConnect()} ml={3} fontSize="sm" colorScheme="purple" isDisabled={this.state.port === ''}>Connect</Button>    
+          <Button
+            onClick={() => this.handleCOMConnect()}
+            ml={3}
+            fontSize="sm"
+            colorScheme="purple"
+            isDisabled={this.state.port === ''}
+          >
+            Connect
+          </Button>
         </Box>
-
+        
 
       </Stack>
+      <Atrium/>
+      <Ventricle/>
+      </>
     );
   }
 }
