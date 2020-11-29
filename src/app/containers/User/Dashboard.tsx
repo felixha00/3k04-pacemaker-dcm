@@ -1,20 +1,28 @@
-import { Divider, Flex, Heading, IconButton, Stack, Text, Button } from "@chakra-ui/core";
-import React, { Component } from "react";
+import {
+  Divider,
+  Flex,
+  Heading,
+  IconButton,
+  Stack,
+  Text,
+  Button,
+  Input
+} from '@chakra-ui/core';
+import React, { Component } from 'react';
 
-import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/core";
-import Parameters from "./Parameters";
-import Pacemaker from "./Pacemaker";
-import { subscribeToTimer } from "utils/socket.io/socketIoAPI";
-
+import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/core';
+import Parameters from './Parameters';
+import Pacemaker from './Pacemaker';
+import { subscribeToTimer, writeData } from 'utils/socket.io/socketIoAPI';
 
 interface Props {
-  history: any
+  history: any;
 }
 interface State {}
 
 class Dashboard extends Component<Props, State> {
-  constructor(props){
-    super(props)
+  constructor(props) {
+    super(props);
     /*
     subscribeToTimer((err, timestamp) => this.setState({ 
       timestamp 
@@ -22,13 +30,12 @@ class Dashboard extends Component<Props, State> {
 */
   }
   state = {
-    name: "",
-    timestamp: "",
+    name: '',
+    timestamp: '',
   };
 
-
-  componentDidMount = () => {
-    let user = JSON.parse(localStorage.getItem("user"));
+  componentDidMount(){
+    let user = JSON.parse(localStorage.getItem('user'));
     this.setState({ name: user.username });
     /*
     subscribeToTimer((err, timestamp) => {
@@ -47,37 +54,55 @@ class Dashboard extends Component<Props, State> {
     );*/
   };
 
+  handleClick(val) {
+    writeData(val, (flag) => {
+      return console.log(flag)
+    })
+  }
+
+
   render() {
     return (
       <>
-      <Stack isInline alignItems="center">
-
-     
-        <Stack>
-          <Text>{this.state.timestamp}</Text>
-          <Heading>Dashboard</Heading>
-          <Heading fontSize="md">Name: {this.state.name}</Heading>
-          
-        </Stack>
-        <Flex flexGrow={1}/>
-        <Button colorScheme="purple" fontSize="sm" onClick={() => this.props.history.push('/')}>Log Out</Button>
-        <IconButton aria-label="menu" icon={<Text>⚙️</Text>}></IconButton>
+        <Stack isInline alignItems="center">
+          <Stack>
+            <Text>{this.state.timestamp}</Text>
+            <Heading>Dashboard</Heading>
+            <Heading fontSize="md">Name: {this.state.name}</Heading>
+          </Stack>
+          <Flex flexGrow={1} />
+          <Button
+            colorScheme="purple"
+            fontSize="sm"
+            onClick={() => this.props.history.push('/')}
+          >
+            Log Out
+          </Button>
+          <IconButton aria-label="menu" icon={<Text>⚙️</Text>}></IconButton>
         </Stack>
         <Tabs mt={3} variant="enclosed-colored" colorScheme="purple">
           <TabList>
             {tabData.map((tab, index) => (
-            <Tab key={index}>{tab.label}</Tab>
+              <Tab key={index}>{tab.label}</Tab>
             ))}
-            
           </TabList>
           <TabPanels>
             {tabData.map((tab, index) => (
-            <TabPanel p={0} mt={6} key={index}>
-              {tab.content}
-            </TabPanel>
-          ))}
+              <TabPanel p={0} mt={6} key={index}>
+                {tab.content}
+              </TabPanel>
+            ))}
           </TabPanels>
         </Tabs>
+        <Button key={3} onClick={() => this.handleClick(21)}>
+              1
+        </Button>
+        <Button key={3} onClick={() => this.handleClick(2)}>
+              2
+        </Button>
+        <Button key={3} onClick={() => this.handleClick(3)}>
+              x
+        </Button>
       </>
     );
   }
@@ -86,13 +111,12 @@ class Dashboard extends Component<Props, State> {
 export default Dashboard;
 
 const tabData = [
-    {
-      label: 'Pacemaker',
-      content: <Pacemaker/>
-    },
-    {
-        label: 'Parameters',
-        content: <Parameters/>
-    },
-    
-]
+  {
+    label: 'Pacemaker',
+    content: <Pacemaker />,
+  },
+  {
+    label: 'Parameters',
+    content: <Parameters />,
+  },
+];

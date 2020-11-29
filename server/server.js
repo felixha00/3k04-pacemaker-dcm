@@ -19,7 +19,7 @@ var app = express()
 //var io = require('socket.io')(server)
 
 var io = require('socket.io')(app);
-
+var t = 0;
 
 let buffer = new ArrayBuffer(33);
 let int8View = new Uint8Array(buffer);
@@ -52,9 +52,11 @@ for (let i = 6; i < 13; i++){
 }
 */
 
+/*
 for (let i = 0; i < int8View.length; i++) {
   console.log('Entry ' + i + ': ' + int8View[i]);
 }
+*/
 
 /////app.use(bodyParser.urlencoded({ extended: true }));
 //app.use(cors());
@@ -62,46 +64,37 @@ for (let i = 0; i < int8View.length; i++) {
 const sp = require('serialport');
 const rl = require('@serialport/parser-readline');
 const rd = require('@serialport/parser-ready');
+const bl = require('@serialport/parser-byte-length');
 
-const parser = new rl();
+const parser = new bl({ length: 1 });
 var port;
 //server = require('http').createServer(app);
 
-
-port = new sp("COM12", {
+/*
+port = new sp("COM3", {
   autoOpen: true,
-  baudRate: 9600,
+  baudRate: 115200,
 })
 
-port.pipe(parser)
-parser.on("data", (line) => console.log(line))
-//parser.on('readable', console.log('connected'))
 
+
+parser.on("data", (byte) => {
+  console.log(parseInt(byte.toString("hex"), 16))
+})
+//parser.on('readable', console.log('connected'))
+*/
 //parser.write(int8View)
 
+/*
 port.write(int8View, function(err) {
   if (err) {
     return console.log('Error on write: ', err.message)
   }
   console.log('message written')
 })
-
-
-var getPortsList = callback => {
-  sp.list().then(ports => {
-    ports.forEach(function (port) {
-      console.log(port.path);
-    });
-  });
-};
-
-/*
-app.listen(apiPort, () => {
-  console.log(`Server running on port ${apiPort}`);
-});
 */
 
-/*
+
 io.on('connection', client => {
   client.on('disconnect', () => console.log('Client disconnected'));
 
@@ -130,28 +123,70 @@ io.on('connection', client => {
   });
   /////////////////////////
 
+  client.on('subscribeToVentricle', () => {
+    // on single data
+    parser.on("data", (byte) => {
+     
+      let str = parseInt(byte.toString("hex"), 16)
+      console.log(str, t, '| Type: ', typeof str )
+      io.emit('sendData', str, t)
+      t++
+    })
+  })
+
+  client.on('writeData', (data) => {
+
+    let hexData = data.toString(16);
+    let writeBuffer = new ArrayBuffer(1);
+    let write_int8View = new Uint8Array(writeBuffer);
+
+    write_int8View[0] = data
+
+    port.write(write_int8View, function(err){
+      if (err){
+        return console.log('Error on write:', err.message)
+      }
+      console.log('Wrote [Decimal:', data, 'Hex:', write_int8View,']')
+    })
+
+    io.emit('sentData', true)
+  })
+
+
   client.on('connectToCOMPort', COMPort => {
     console.log(`client trying to connect to ${COMPort}`);
-    console.log('Port status: ', !!port);
+    
+    console.log('Existing Port?: ', port == undefined ? 'No Port Previously Selected' : port.path);
+    
 
+    /*
     if (port) {
       port.close(err => {
-        console.log('port closed: ', !!!err);
+        if (err) {
+          console.log(err)
+        }
+        else {
+          console.log('Closing previous port: ', port.path);
+        }
       });
     }
-
+    */
+    
     port = new sp(
       COMPort,
       {
         autoOpen: true,
-        baudRate: 9600,
+        baudRate: 115200,
       },
       err => {
-        console.log(err);
+        
         if (err) {
+          console.log(err)
           io.emit('connectCOMError', `${err}`);
         } else {
-          io.emit('connectCOMSuccess', `Successfully connected to ${COMPort}`);
+          port.pipe(parser)
+          console.log('Successfully connected to', port.path )
+          io.emit('connectCOMSuccess', `Successfully connected to ${port.path}`);
         }
       },
     );

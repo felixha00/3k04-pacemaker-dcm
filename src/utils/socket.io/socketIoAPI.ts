@@ -20,3 +20,13 @@ export const connectCOMPort = (cb, port) => {
   socket.on('connectCOMError', err => cb(false, err))
   socket.on('connectCOMSuccess', msg => cb(true, msg))
 }
+
+export const subscribeToVentricle = (cb) => {
+  socket.emit('subscribeToVentricle')
+  socket.on('sendData', (byte,t) => cb(byte,t))
+}
+
+export const writeData = (data, cb) => {
+  socket.emit('writeData', data)
+  socket.off('sentData').on('sentData', (flag) => cb(flag))
+}

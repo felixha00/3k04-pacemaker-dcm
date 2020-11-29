@@ -5,6 +5,7 @@
 import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
 import { createInjectorsEnhancer, forceReducerReload } from 'redux-injectors';
 import createSagaMiddleware from 'redux-saga';
+import thunk from 'redux-thunk';
 
 import { createReducer } from './reducers';
 import pacemakerReducer from './reducers/pacemakerReducer';
@@ -15,7 +16,7 @@ export function configureAppStore() {
   const { run: runSaga } = sagaMiddleware;
 
   // Create the store with saga middleware
-  const middlewares = [sagaMiddleware];
+  const middlewares = [sagaMiddleware, thunk];
 
   const enhancers = [
     createInjectorsEnhancer({
@@ -25,7 +26,7 @@ export function configureAppStore() {
   ];
 
   const store = configureStore({
-    reducer: createReducer({pacemaker: pacemakerReducer}),
+    reducer: createReducer({ pacemaker: pacemakerReducer }),
     middleware: [...getDefaultMiddleware(), ...middlewares],
     devTools: process.env.NODE_ENV !== 'production',
     enhancers,

@@ -3,32 +3,22 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Line } from 'react-chartjs-2';
 import { VictoryChart, VictoryLine } from 'victory';
+import { subscribeToVentricle } from 'utils/socket.io/socketIoAPI';
 
 interface Props {}
 interface State {
   display: any;
+  ventricleData: any;
 }
 
-const atriumData = {
-  labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+const genVentData = (y, t, data: Array<any>) => ({
   datasets: [
     {
       data: [
+        ...data,
         {
-          t: 3,
-          y: 5,
-        },
-        {
-          t: 7,
-          y: 2,
-        },
-        {
-          t: 33,
-          y: 2,
-        },
-        {
-          t: 99,
-          y: 5,
+          y: y,
+          t: t,
         },
       ],
       fill: false,
@@ -36,7 +26,7 @@ const atriumData = {
       borderColor: 'rgb(58, 56, 197)',
     },
   ],
-};
+});
 
 const atriumOptions = {
   scales: {
@@ -52,13 +42,10 @@ const atriumOptions = {
     ],
     xAxes: [
       {
-        type: 'time',
-        time: {
-          unit: 'millisecond',
-          displayFormats: {
-            millisecond: 'SSS',
-          },
+        ticks: {
+          display: false,
         },
+        type: 'time',
         distribution: 'series',
         scaleLabel: {
           display: true,
@@ -77,6 +64,16 @@ const atriumOptions = {
 export class Ventricle extends Component<Props, State> {
   state = {
     display: true,
+    ventricleData: [],
+  };
+
+  componentDidMount = () => {
+    subscribeToVentricle((byte, t) => {
+      console.log(byte);
+      this.setState({
+        ventricleData: [...this.state.ventricleData, { y: byte, t: t }],
+      });
+    });
   };
 
   onClick = () => {
@@ -84,12 +81,22 @@ export class Ventricle extends Component<Props, State> {
   };
 
   render() {
+    let ventricleChartData = {
+      datasets: [
+        {
+          data: this.state.ventricleData,
+          fill: false,
+          backgroundColor: 'rgb(58, 56, 197)',
+          borderColor: 'rgb(58, 56, 197)',
+        },
+      ],
+    };
     return (
       <>
         <Stack mt={6} mb={6}>
           <Stack isInline>
             <Checkbox
-            isChecked={this.state.display}
+              isChecked={this.state.display}
               onChange={this.onClick}
               size="lg"
               colorScheme="purple"
@@ -100,7 +107,11 @@ export class Ventricle extends Component<Props, State> {
           </Stack>
         </Stack>
         {this.state.display && (
-          <Line data={atriumData} options={atriumOptions} height={40}></Line>
+          <Line
+            data={ventricleChartData}
+            options={atriumOptions}
+            height={40}
+          ></Line>
         )}
       </>
     );
