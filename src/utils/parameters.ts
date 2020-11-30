@@ -100,6 +100,7 @@ export const inputParamOpts = {
     min: 30,
     unit: 'ppm',
     step: 5,
+    mode: 'D',
   },
 
   upper_rate_limit: {
@@ -107,47 +108,55 @@ export const inputParamOpts = {
     min: 50,
     unit: 'ppm',
     step: 5,
+    mode: 'D',
   },
 
-  atrial_amplitude: {
+  atrial_amplitude_regulated: {
     min: 0,
-    max: 7,
+    max: 5,
     unit: 'V',
-    step: 0.1
+    step: 0.1,
+    mode: 'A',
   },
 
   atrial_pulse_width: {
-    min: 0.05,
-    max: 1.9,
+    min: 1,
+    max: 30,
     unit: 'ms',
-    step: 0.1
-  },
-
-  ventricular_amplitude:{
-    min: 0,
-    max: 7,
-    unit: 'V',
-    step: 0.1
-  },
-
-  ventricular_pulse_width:{
-    min: 0.05,
-    max: 1.9,
-    unit: 'ms',
-    step: 0.1
-  },
-  ventricular_refractory_period: {
-    min: 150,
-    max: 500,
-    unit: 'ms',
-    step: 10
+    step: 0.1,
+    mode: 'A',
   },
   atrial_refractory_period: {
     min: 150,
     max: 500,
     unit: 'ms',
-    step: 10
+    step: 10,
+    mode: 'A',
   },
+
+  ventricular_amplitude_regulated:{
+    min: 0,
+    max: 5,
+    unit: 'V',
+    step: 0.1,
+    mode: 'V',
+  },
+
+  ventricular_pulse_width:{
+    min: 1,
+    max: 30,
+    unit: 'ms',
+    step: 1,
+    mode: 'V',
+  },
+  ventricular_refractory_period: {
+    min: 150,
+    max: 500,
+    unit: 'ms',
+    step: 10,
+    mode: 'V',
+  },
+  
 };
 
 

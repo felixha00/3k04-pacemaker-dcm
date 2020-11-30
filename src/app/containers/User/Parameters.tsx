@@ -25,14 +25,13 @@ import {
   NumberDecrementStepper,
 } from '@chakra-ui/core';
 
-
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { toBytesInt32 } from 'utils/numberFunctions';
 import { setParams } from 'store/actions/pacemakerActions';
 
 interface Props {
-  pacemaker: any
+  pacemaker: any;
 }
 interface State {}
 
@@ -40,27 +39,21 @@ export class Parameters extends Component<Props, State> {
   state = {
     p_pacingMode: 'VVI',
     p_pacingState: 'PERMANENT',
-    p_lowrateInterval: 1000,
-    p_vPaceAmp: 3500,
-    p_vPaceWidth: 0.4,
-    p_VRP: 320,
     maximumSensorRate: 120,
     activityThreshold: 'MED',
     reaction_time: 0,
     recovery_time: 0,
     response_factor: 8,
     lower_rate_limit: 0,
-    atrial_amplitude: 0,
+    atrial_amplitude_regulated: 0,
     atrial_pulse_width: 0,
-    ventricular_amplitude: 0,
+    ventricular_amplitude_regulated: 0,
     ventricular_pulse_width: 0,
     ventricular_refractory_period: 0,
     atrial_refractory_period: 0,
   };
 
-  
   componentDidMount() {
-
     this.setState({
       ...this.props.pacemaker.params,
       reaction_time: 10 + ((16 - this.state.response_factor) * 8) / 3,
@@ -76,7 +69,7 @@ export class Parameters extends Component<Props, State> {
     e.preventDefault();
     console.log(this.state);
     //@ts-ignore
-    this.props.setParams(this.state)
+    this.props.setParams(this.state);
   }
 
   onResponseFactorChange(n) {
@@ -87,16 +80,27 @@ export class Parameters extends Component<Props, State> {
     });
   }
 
+  checkMode(mode) {
+    let currentMode: String = this.state.p_pacingMode.charAt(0);
+
+    if (currentMode == 'O') {return false} // if OFF
+
+    if (mode == 'D') {
+      return true;
+    } else if (mode == currentMode) {
+      return true;
+    } else {
+      return false;
+    }
+  }
   render() {
-   
     let buf = Buffer.allocUnsafe(4);
     var str = JSON.stringify(this.state, undefined, 4);
     return (
-      <>  
-
+      <>
         <Heading fontSize="xl">Current Parameters</Heading>
         <Stack mt={6} spacing={6}>
-        <pre>{str}</pre>
+          <pre>{str}</pre>
           <form onSubmit={e => this.onSubmit(e)}>
             <SimpleGrid mt={3} columns={[1, 2, 2, 4, 5]} spacing={3}>
               <Box>
@@ -150,7 +154,7 @@ export class Parameters extends Component<Props, State> {
                 </Select>
               </Box>
 
-              {Object.keys(programmableParams).map(key => {
+              {/*Object.keys(programmableParams).map(key => {
                 let input = programmableParams[key];
                 return (
                   <>
@@ -173,7 +177,7 @@ export class Parameters extends Component<Props, State> {
                     </Box>
                   </>
                 );
-              })}
+              })*/}
             </SimpleGrid>
 
             <SimpleGrid mt={6} columns={[1, 2, 2, 4, 5]} spacing={3}>
@@ -197,6 +201,7 @@ export class Parameters extends Component<Props, State> {
                         defaultValue={input.min}
                         min={input.min}
                         max={input.max}
+                        isDisabled={!this.checkMode(input.mode)}
                       >
                         <NumberInputField />
                         <NumberInputStepper>
@@ -223,6 +228,7 @@ export class Parameters extends Component<Props, State> {
                   defaultValue={8}
                   min={1}
                   max={16}
+                  isDisabled={!this.checkMode('D')}
                 >
                   <NumberInputField />
                   <NumberInputStepper>
@@ -257,14 +263,13 @@ export class Parameters extends Component<Props, State> {
             </Button>
           </form>
         </Stack>
-       
       </>
     );
   }
 }
 
 const mapStateToProps = state => ({
-  pacemaker: state.pacemaker
+  pacemaker: state.pacemaker,
 });
 
 const mapDispatchToProps = {

@@ -14,6 +14,7 @@ import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/core';
 import Parameters from './Parameters';
 import Pacemaker from './Pacemaker';
 import { subscribeToTimer, writeData } from 'utils/socket.io/socketIoAPI';
+import dayjs from "dayjs";
 
 interface Props {
   history: any;
@@ -37,7 +38,7 @@ class Dashboard extends Component<Props, State> {
   componentDidMount(){
     let user = JSON.parse(localStorage.getItem('user'));
     this.setState({ name: user.username });
-    /*
+    
     subscribeToTimer((err, timestamp) => {
       try {
         this.setState({ 
@@ -47,11 +48,7 @@ class Dashboard extends Component<Props, State> {
         console.log(err)
       }
     }
-    
-   
-    
-    
-    );*/
+    );
   };
 
   handleClick(val) {
@@ -66,7 +63,8 @@ class Dashboard extends Component<Props, State> {
       <>
         <Stack isInline alignItems="center">
           <Stack>
-            <Text>{this.state.timestamp}</Text>
+            <Text fontSize="xs">3K04 Pacemaker | v.1.0.1 | McMaster University </Text>
+            <Text>{dayjs(this.state.timestamp).format('D MMM YYYY h:mm:ssA')}</Text>
             <Heading>Dashboard</Heading>
             <Heading fontSize="md">Name: {this.state.name}</Heading>
           </Stack>
@@ -95,13 +93,13 @@ class Dashboard extends Component<Props, State> {
           </TabPanels>
         </Tabs>
         <Button key={3} onClick={() => this.handleClick(21)}>
-              1
+              Send 0x15
         </Button>
         <Button key={3} onClick={() => this.handleClick(2)}>
-              2
+              Send 0x2
         </Button>
         <Button key={3} onClick={() => this.handleClick(3)}>
-              x
+              Send 0x3
         </Button>
       </>
     );

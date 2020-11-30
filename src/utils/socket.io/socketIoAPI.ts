@@ -11,7 +11,7 @@ export const subscribeToTimer = (cb) => {
 
 export const getCOMPorts = (cb) => {
   socket.emit('requestCOMPorts')
-  socket.on('getCOMPorts', ports => cb(ports));
+  socket.on('getCOMPorts', ports => cb(JSON.parse(ports)));
 }
 
 export const connectCOMPort = (cb, port) => {

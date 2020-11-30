@@ -113,12 +113,13 @@ io.on('connection', client => {
     sp.list()
       .then(ports => {
         ports.forEach(function (port) {
-          COMPorts.push(port.path);
+
+          COMPorts.push({path: port.path, serial: port.serialNumber});
         });
       })
       .then(() => {
         console.log(COMPorts);
-        io.sockets.emit('getCOMPorts', COMPorts);
+        io.sockets.emit('getCOMPorts', JSON.stringify(COMPorts));
       });
   });
   /////////////////////////
@@ -145,11 +146,13 @@ io.on('connection', client => {
     port.write(write_int8View, function(err){
       if (err){
         return console.log('Error on write:', err.message)
+        io.emit('sentData', false)
       }
       console.log('Wrote [Decimal:', data, 'Hex:', write_int8View,']')
+      io.emit('sentData', true)
     })
 
-    io.emit('sentData', true)
+ 
   })
 
 

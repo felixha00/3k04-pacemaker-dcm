@@ -5,7 +5,9 @@ import { Line } from 'react-chartjs-2';
 import { VictoryChart, VictoryLine } from 'victory';
 import { subscribeToVentricle } from 'utils/socket.io/socketIoAPI';
 
-interface Props {}
+interface Props {
+  pacemaker?: any,
+}
 interface State {
   display: any;
   ventricleData: any;
@@ -28,7 +30,7 @@ const genVentData = (y, t, data: Array<any>) => ({
   ],
 });
 
-const atriumOptions = {
+const ventricleOptions = {
   scales: {
     yAxes: [
       {
@@ -81,6 +83,10 @@ export class Ventricle extends Component<Props, State> {
   };
 
   render() {
+    const {pacemaker} = this.props
+
+    //if (pacemaker.paceMode == 'A' || pacemaker.paceMode == 'O') return null
+
     let ventricleChartData = {
       datasets: [
         {
@@ -109,7 +115,7 @@ export class Ventricle extends Component<Props, State> {
         {this.state.display && (
           <Line
             data={ventricleChartData}
-            options={atriumOptions}
+            options={ventricleOptions}
             height={40}
           ></Line>
         )}
@@ -118,7 +124,9 @@ export class Ventricle extends Component<Props, State> {
   }
 }
 
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+  pacemaker: state.pacemaker
+});
 
 const mapDispatchToProps = {};
 

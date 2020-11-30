@@ -11,9 +11,9 @@ import {
 import React, { Component } from 'react';
 import { connectCOMPort, getCOMPorts } from 'utils/socket.io/socketIoAPI';
 import { connect } from 'react-redux';
-import { Atrium } from './Graphs/Atrium';
+import Atrium from './Graphs/Atrium';
 import { defaults } from 'react-chartjs-2';
-import { Ventricle } from './Graphs/Ventricle';
+import Ventricle from './Graphs/Ventricle';
 
 // Disable animating charts by default.
 defaults.global.defaultFontFamily = 'Inter';
@@ -36,6 +36,7 @@ const PacemakerStatus = props => {
             <Text color="purple.100" fontSize="xs">
               {props.msg}
             </Text>
+            <Text>Current Mode: {props.pacemaker.params.p_pacingMode}</Text>
           </Box>
         </Stack>
       </Box>
@@ -60,7 +61,7 @@ class Pacemaker extends Component<Props, State> {
     if (index === 0) {
       return this.setState({ port: '' });
     }
-    this.setState({ port: e.nativeEvent.target[index].text });
+    this.setState({ port: e.nativeEvent.target[index].text.split(" ")[0] });
   };
 
   handleCOMConnect() {
@@ -97,7 +98,7 @@ class Pacemaker extends Component<Props, State> {
               onChange={e => this.handleCOMChange(e)}
             >
               {this.state.availablePorts.map(port => (
-                <option value={port}>{port}</option>
+                <option value={port.path}>{port.path} ({port.serial})</option>
               ))}
             </Select>
             <Button

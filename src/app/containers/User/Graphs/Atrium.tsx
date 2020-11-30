@@ -3,40 +3,15 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Line } from 'react-chartjs-2';
 import { VictoryChart, VictoryLine } from 'victory';
+import { subscribeToVentricle } from 'utils/socket.io/socketIoAPI';
 
-interface Props {}
+interface Props {
+  pacemaker?: any;
+}
 interface State {
   display: any;
+  atriumData: any;
 }
-
-const atriumData = {
-  labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
-  datasets: [
-    {
-      data: [
-        {
-          t: 3,
-          y: 5,
-        },
-        {
-          t: 7,
-          y: 2,
-        },
-        {
-          t: 33,
-          y: 2,
-        },
-        {
-          t: 99,
-          y: 5,
-        },
-      ],
-      fill: false,
-      backgroundColor: 'rgb(58, 56, 197)',
-      borderColor: 'rgb(58, 56, 197)',
-    },
-  ],
-};
 
 const atriumOptions = {
   scales: {
@@ -52,13 +27,10 @@ const atriumOptions = {
     ],
     xAxes: [
       {
-        type: 'time',
-        time: {
-          unit: 'millisecond',
-          displayFormats: {
-            millisecond: 'SSS',
-          },
+        ticks: {
+          display: false,
         },
+        type: 'time',
         distribution: 'series',
         scaleLabel: {
           display: true,
@@ -77,6 +49,16 @@ const atriumOptions = {
 export class Atrium extends Component<Props, State> {
   state = {
     display: true,
+    atriumData: [],
+  };
+
+  componentDidMount = () => {
+    subscribeToVentricle((byte, t) => {
+      console.log(byte);
+      this.setState({
+        atriumData: [...this.state.atriumData, { y: byte, t: t }],
+      });
+    });
   };
 
   onClick = () => {
@@ -84,11 +66,26 @@ export class Atrium extends Component<Props, State> {
   };
 
   render() {
+    const {pacemaker} = this.props
+    console.log(this.props)
+    //if (pacemaker.paceMode == 'V' || pacemaker.paceMode == 'O') return null
+    let atriumChartData = {
+      datasets: [
+        {
+          data: this.state.atriumData,
+          fill: false,
+          backgroundColor: 'rgb(197, 56, 56)',
+          borderColor: 'rgb(197, 56, 56)',
+        },
+      ],
+    };
     return (
       <>
+        
         <Stack mt={6} mb={6}>
           <Stack isInline>
-            <Checkbox isChecked={this.state.display}
+            <Checkbox
+              isChecked={this.state.display}
               onChange={this.onClick}
               size="lg"
               colorScheme="purple"
@@ -99,14 +96,20 @@ export class Atrium extends Component<Props, State> {
           </Stack>
         </Stack>
         {this.state.display && (
-          <Line data={atriumData} options={atriumOptions} height={40}></Line>
+          <Line
+            data={atriumChartData}
+            options={atriumOptions}
+            height={40}
+          ></Line>
         )}
       </>
     );
   }
 }
 
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+  pacemaker: state.pacemaker
+});
 
 const mapDispatchToProps = {};
 
